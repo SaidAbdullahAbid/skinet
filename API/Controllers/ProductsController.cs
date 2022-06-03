@@ -9,9 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseAPIController
     {
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
@@ -36,6 +34,11 @@ namespace API.Controllers
             var spec = new ProductWithTypesAndBrandSpecification();
             var products = await _productRepo.ListAsync(spec);
             var productDot = _mapper.Map<IReadOnlyList<ProductToReturnDto>>(products);
+            // var productWithItem = new ReturnDtoWithNo<Product>()
+            // {
+            //     ItemNo = products.Count(),
+            //     Items = products
+            // };
             return Ok(productDot);
 
         }

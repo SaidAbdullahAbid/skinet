@@ -1,31 +1,24 @@
 using API.data;
+using API.Errors;
+using API.Extensions;
 using API.Helpers;
+using API.Properties;
 using Core.interfaces;
 using Infrastructure.data;
 using Infrastructure.data.config;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddControllers();
 builder.Services.AddDbContext<StoreContext>(x => x.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
+builder.Services.AddApplicationServices();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(swagger =>
-{
-    swagger.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "skinet API",
-        Description = "API based project for skinet Application"
-    });
-});
+builder.Services.AddSwaggerDocumentation();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -35,9 +28,9 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<StoreContext>();
-        // await context.Database.MigrateAsync();
-        // await StoreContextSeed.SeedAsync(context, loggerFactory);
-        SeedConfig.ConfigureAndSeedDb(context, loggerFactory);
+        await context.Database.MigrateAsync();
+        await StoreContextSeed.SeedAsync(context, loggerFactory);
+
     }
     catch (Exception ex)
     {
@@ -46,18 +39,10 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred during migration");
     }
 }
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
-        }
-    );
 
-}
+// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseSwaggerDocumentation();
 app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
 app.UseHttpsRedirection();

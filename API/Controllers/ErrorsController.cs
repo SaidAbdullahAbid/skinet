@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Route("errors/{statusCode}")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ErrorsController : BaseAPIController
     {
         [HttpGet]

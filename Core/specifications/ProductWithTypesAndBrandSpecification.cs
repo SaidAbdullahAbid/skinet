@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Core.entities;
 
 namespace Core.specifications
@@ -10,10 +5,36 @@ namespace Core.specifications
     public class ProductWithTypesAndBrandSpecification : Specification<Product>
     {
 
-        public ProductWithTypesAndBrandSpecification()
+        public ProductWithTypesAndBrandSpecification(ProductSpecPrams productPrams)
+        : base((x) =>
+        (string.IsNullOrEmpty(productPrams.Search) || x.Name.ToLower().Contains(productPrams.Search)) &&
+        (!productPrams.BrandId.HasValue || x.ProductBrandId == productPrams.BrandId) &&
+        (!productPrams.TypeId.HasValue || x.ProductTypeId == productPrams.TypeId)
+        )
         {
             AddInclude(p => p.ProductBrand);
             AddInclude(p => p.ProductType);
+            AddOrderBy(x => x.Name);
+            ApplyPaging(productPrams.PageSize * (productPrams.PageIndex - 1), productPrams.PageSize);
+            if (productPrams.Sort is not null)
+            {
+                productPrams.Sort = productPrams.Sort.ToLower();
+                switch (productPrams.Sort)
+                {
+                    case "priceasc":
+                        AddOrderBy(p => p.Price);
+                        break;
+                    case "pricedesc":
+                        AddOrderByDescending(p => p.Price);
+                        break;
+                    case "description":
+                        AddOrderBy(p => p.Description);
+                        break;
+                    default:
+                        AddOrderBy(n => n.Name);
+                        break;
+                }
+            }
         }
 
         public ProductWithTypesAndBrandSpecification(int id)

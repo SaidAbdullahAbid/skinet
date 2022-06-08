@@ -1,0 +1,19 @@
+.link{
+    &:hover{
+        text-decoration:  underline !important;
+        cursor: pointer;
+    }
+}
+.card-no{
+ position: absolute;
+ top: -12px;
+ right: -20px;   
+ min-height: 25px;
+ min-width: 25px;
+ font-size: 1em;
+ color:white;
+ background-color: blue;
+ border-radius: 10px;
+ text-align: center;
+
+}

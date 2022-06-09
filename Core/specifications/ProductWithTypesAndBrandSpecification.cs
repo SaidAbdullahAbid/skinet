@@ -21,14 +21,11 @@ namespace Core.specifications
                 productPrams.Sort = productPrams.Sort.ToLower();
                 switch (productPrams.Sort)
                 {
-                    case "priceasc":
-                        AddOrderBy(p => p.Price);
-                        break;
                     case "pricedesc":
                         AddOrderByDescending(p => p.Price);
                         break;
-                    case "description":
-                        AddOrderBy(p => p.Description);
+                    case "priceasc":
+                        AddOrderBy(p => p.Price);
                         break;
                     default:
                         AddOrderBy(n => n.Name);

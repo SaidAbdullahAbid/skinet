@@ -19,6 +19,9 @@
         "@schematics/angular:pipe": {
           "skipTests": true
         },
+        "@schematics/angular:service": {
+          "skipTests": true
+        },
         "@schematics/angular:application": {
           "strict": true
         }
@@ -42,7 +45,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "./node_modules/bootstrap/dist/css/bootstrap.css"
             ],
             "scripts": []
           },

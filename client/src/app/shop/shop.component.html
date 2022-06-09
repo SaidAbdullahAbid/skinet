@@ -1,0 +1,64 @@
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div class="filter">
+                <div class="h5 text-info ml-3" style="margin:0px 10px 15px 10px ;">
+                    Sort
+                </div>
+                <select class="form-select form-select-sm mb-3" (change)="onSortValueSelected($event.target.value)">
+                    <option *ngFor=" let sort of sortOptions" [value]="sort.value">{{sort.name}}</option>
+                </select>
+            </div>
+            <div class="brand">
+                <div class="h5 text-info ml-3" style="margin:0px 10px 15px 10px ;">
+                    Brands
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-action" *ngFor="let brand of brands"
+                        [class.active]="brand.id === shopParams.brandId" (click)="onBrandIdSelected(brand.id)"
+                        [value]="brand.id">
+                        {{brand.name}}
+                    </li>
+                </ul>
+            </div>
+            <div class="type">
+                <div class="h5 text-info ml-3" style="margin:15px 10px ;">
+                    Type
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-action" *ngFor="let type of types"
+                        (click)="onTypeIdSelected(type.id)" [class.active]="type.id === shopParams.typeId"
+                        [value]="type.id">{{type.name}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="d-flex justify-content-between flex-column flex-md-row">
+                <skinet-pagination-header [PageIndex]="shopParams.pageIndex" [PageSize]="shopParams.pageSize"
+                    [TotalCount]="shopParams.totalCount"></skinet-pagination-header>
+                <div class=" d-flex align-content-center">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control  form-control-sm" placeholder="Search" #search
+                            aria-label="Search" (keyup.enter)="onSearch()">
+                        <button (click)="onSearch()" class="btn btn-outline-primary btn-sm"
+                            type="button">Search</button>
+                    </div>
+                    <button (click)="onReset()" class="btn btn-sm mb-3  btn-outline-success"
+                        style="margin-left: 20px;">Reset</button>
+                </div>
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+                <div class="col" *ngFor="let product of products">
+                    <skinet-product-item [Product]="product"></skinet-product-item>
+                </div>
+
+            </div>
+            <div class="mt-4 d-flex justify-content-center" *ngIf="shopParams.totalCount > 0">
+                <skinet-pager [PageSize]="shopParams.pageSize" [TotalCount]="shopParams.totalCount"
+                    (PageChanged)="onPageChange($event)">
+                </skinet-pager>
+            </div>
+        </div>
+    </div>
+</div>
